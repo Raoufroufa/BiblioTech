@@ -1,5 +1,4 @@
 const Book = require('../models/book');
-const Borrowing = require('../models/borrowing');
 const Category = require('../models/category');
 
 // functions
@@ -109,33 +108,7 @@ async function deletedBook(req, res){
     };
 };
 
-async function addBorrowing (req, res) {
 
-    const book = req.body.book
-    try {
-        const new_borrowing = new Borrowing({
-            user: req.body.user,
-            book: req.body.book,
-            borrowDate: req.body.borrowDate,
-            returnDate: req.body.returnDate
-        });
-
-        const search = await Book.findById(book._id);
-        if (search.copies > 0){
-            search.copies -= 1;
-            res.send('Your book is available you can borrow a copy!');
-        }
-        else{
-            res.send('Sorry, Your book is not available!')
-        }
-        await new_borrowing.save();
-        const bookUpdated = await Book.findByIdAndUpdate( book._id, {$inc: {nbr_borrowing: 1}});
-        res.send(new_borrowing);
-    }
-    catch (err) {
-        console.log(err)
-    }
-};
 
 
 
@@ -147,6 +120,5 @@ module.exports = {
     getCategory,
     addBook,
     updatedBook,
-    deletedBook,
-    addBorrowing
+    deletedBook
 };
