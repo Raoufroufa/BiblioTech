@@ -16,9 +16,29 @@ async function getAllBooks (req, res) {
 };
 
 async function getBook (req, res) {
+    const book =[];
+    
     try {
-        const book = await Book.findById(req.params.id);
-        res.send(book)
+        switch(req.query) {
+            case Book._id:
+                book = await Book.findById(Book._id);
+                break;
+            case Book.author:
+                book = await Book.findOne({author: Book.author});
+                break;
+            case Book.rate:
+                book = await Book.findOne({rate: Book.rate});
+                break;
+            case Book.category:
+                book = await Book.findOne({category: Book.category});
+                break;    
+            case Book.nbr_borrowing:
+                book = await Book.findOne({nbr_borrowing: Book.nbr_borrowing});
+                break;    
+            default:
+                res.json(`Sorry, not found!!`);    
+        }
+        res.status(200).json(book)
     }
     catch (err) {
         console.log(err)
@@ -28,38 +48,42 @@ async function getBook (req, res) {
 async function addBorrowing (req, res) {
 
     const book = req.body.book
-    const K= req.body.borrowDate;
-    const Month = K.getMonth();
-    
+    const month = new Date(req.body.borrowDate).getMonth()
     try {
         const nbr = await Borrowing.find({user: req.body.user}) 
-        if (nbr.length<4) {
-
+        const count= 0;
+        for (let i=0; i<nbr.length; i++) {
+            if (nbr[i].borrowDate.getMonth() = month) {
+                count += 1;
+            };
+            return count;
+        }
+        if (count < 3) {
             const search = await Book.findById(book._id);
-            if (search.copies > 0){
-            search.copies -= 1;
-            const new_borrowing = new Borrowing({
-            user: req.body.user,
-            book: req.body.book,
-            borrowDate: req.body.borrowDate,
-            returnDate: req.body.returnDate
-            });
+            console.log(search)
+            if (search[0].copies > 0){
+                search[0].copies -= 1;
+                const new_borrowing = new Borrowing({
+                    user: req.body.user,
+                    book: req.body.book,
+                    borrowDate: req.body.borrowDate,
+                    returnDate: req.body.returnDate
+                });
 
-            await new_borrowing.save();
-            const bookUpdated = await Book.findByIdAndUpdate( book._id, {$inc: {nbr_borrowing: 1}});
-            res.send('Your book is available you can borrow a copy!');
-            }
-            else{
-            res.send('Sorry, Your book is not available!')
+                await new_borrowing.save();
+                const bookUpdated = await Book.findByIdAndUpdate( book._id, {$inc: {nbr_borrowing: 1}});
+                res.send('Your book is available you can borrow a copy!');
+            } else {
+                res.send('Sorry, Your book is not available!');
             };
             
         } else {
-            res.json("You depassed the number allowed")
+            res.json("You depassed the number allowed");
         }   
     }
     catch (err) {
-        console.log(err)
-    }
+        console.log(err);
+    };
 };
 
 module.exports = {

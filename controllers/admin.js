@@ -16,6 +16,16 @@ async function createCategory(req, res){
     }
 };
 
+async function getCategory (req, res) {
+    try {
+        const category = await Category.findById(req.params.id);
+        res.send(category);
+    }
+    catch (err) {
+        console.log(err);
+    }
+};
+
 async function updatedCategory(req, res){
     try {
         const categoryUpdated = await Category.findByIdAndUpdate(req.params.id, req.body);
@@ -50,17 +60,6 @@ async function getAllCategories (req, res) {
     }
 };
 
-async function getCategory (req, res) {
-    try {
-        const category = await Category.findById(req.params.id);
-        res.send(category);
-    }
-    catch (err) {
-        console.log(err);
-    }
-};
-
-
 
 async function  addBook (req, res) {
     const category = req.body.category
@@ -75,10 +74,12 @@ async function  addBook (req, res) {
             nbr_borrowing: req.body.nbr_borrowing,
         });
 
-        const categoryUpdated = await Category.findById(req.params.id);
-        categoryUpdated.num_books += 1;
+        const categoryUpdated = await Category.findOne({
+            name: category,
+            $inc: {num_books: 1}
+        });
         await categoryUpdated.save();
-        await addBook.save();
+        await new_book.save()
         res.send(new_book);
     }
     catch (err) {
@@ -109,15 +110,12 @@ async function deletedBook(req, res){
 };
 
 
-
-
-
 module.exports = {
     createCategory,
+    getCategory,
     updatedCategory,
     deletedCategory,
     getAllCategories,
-    getCategory,
     addBook,
     updatedBook,
     deletedBook

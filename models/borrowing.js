@@ -4,13 +4,13 @@ const Schema = mongoose.Schema;
 
 // create borrowing Schema & model 
 const BorrowingSchema = new Schema({
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
+    user_id: {
+      type: String,
+      required: true,
     },
-    book: {
-      type: Schema.Types.ObjectId,
-      ref: "book",
+    book_id: {
+      type: String,
+      required: true,
     },
     borrowDate: {
       type: Date,
