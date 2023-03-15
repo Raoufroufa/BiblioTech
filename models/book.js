@@ -8,16 +8,15 @@ const BookSchema = new Schema({
       type: String,
       required: true,
     },
+     id_category: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'category'
+    },
     author: {
       type: String,
       required: true,
-      unique: true,
     },
     isbn: {
-      type: String,
-      required: true,
-    },
-    category: {
       type: String,
       required: true,
     },

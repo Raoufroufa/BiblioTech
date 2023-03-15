@@ -1,8 +1,10 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const express = require('express');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
+
+
 // functions
 
 async function registeration (req, res) {
@@ -21,6 +23,32 @@ async function registeration (req, res) {
     const user = new User({ name, email,  user_name, password: hashedPassword, address, phone, role });
 
     await user.save();
+
+
+    // Send notification email
+    if(user.role == "applicant") {
+      
+      const transporter = nodemailer.createTransport({
+        
+        service: 'gmail',
+        auth: {
+          
+          user: 'rfabrik7@gmail.com',
+          pass: 'crfcwdtowhmogbqe'
+        }
+      });
+
+      const mailOptions = {
+
+        from: 'rfabrik7@gmail.com',
+        to: user.email,
+        subject: 'Successful registration !',
+        text: 'Thank you for registering on our platform.'
+      };
+
+      await transporter.sendMail(mailOptions);
+
+    };
 
     // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET , {expiresIn: "1h"});

@@ -5,12 +5,12 @@ const Schema = mongoose.Schema;
 // create borrowing Schema & model 
 const BorrowingSchema = new Schema({
     user_id: {
-      type: String,
-      required: true,
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'user'
     },
     book_id: {
-      type: String,
-      required: true,
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'book'
     },
     borrowDate: {
       type: Date,
@@ -19,6 +19,10 @@ const BorrowingSchema = new Schema({
     returnDate: {
       type: Date,
       required: true
+    },
+    renewed: { 
+      type: Boolean,
+      default: false 
     }
 });
 

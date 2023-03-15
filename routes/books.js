@@ -21,5 +21,11 @@ router.get('/books', control.getAllBooks);
 //Get a book
 router.get('/books/search', control.getBook);
 
+// create a new comment
+router.post('/books/:id/comments', control.createComment);
+
+
+// get all comments for a book
+router.get('/books/:id', control.getComments);
 
 module.exports = router;

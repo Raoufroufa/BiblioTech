@@ -4,6 +4,9 @@ const apiRouter = require('./routes/api');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+
+
+
 const authRouter = require('./routes/auth');
 const authMiddleware = require('./middlewhare/authm');
 
@@ -21,14 +24,7 @@ app.use(bodyParser.json());
 app.listen(3000, () => console.log('Server started'));
 
 // // connect to mongodb
-mongoose.connect('mongodb+srv://raouf:123456Raouf@cluster0.zwk8poe.mongodb.net/?retryWrites=true&w=majority');
-mongoose.Promise = global.Promise;
-
-mongoose.connection.once('open', function(){
-    console.log('Connection has been made, now make fireworks...');
-}).on('error', function(error){
-    console.log('Connection error:', error);
-});
+mongoose.connect('mongodb+srv://raouf:123456Raouf@cluster0.zwk8poe.mongodb.net/?retryWrites=true&w=majority', { serverSelectionTimeoutMS: 30000 }, () =>console.log('Connection has been made, now make fireworks...'));
 
 app.use(express.json());
 
@@ -40,15 +36,3 @@ app.use('/auth', authRouter);
 
 // use auth middleware for api routes
 app.use('/api', authMiddleware, apiRouter);
-
-
-
-
-
-
-
-
-
-
-
-
